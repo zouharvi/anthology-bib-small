@@ -1,5 +1,5 @@
 from pybtex.database import parse_file
-bib_data = parse_file('data/anthology.bib')
+bib_data = parse_file('anthology.bib')
 
 for entry in bib_data.entries:
     if "address" in bib_data.entries[entry].fields:
