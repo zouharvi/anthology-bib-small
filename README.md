@@ -20,6 +20,5 @@ ls -lh anthology.bib anthology.min.bib
 ## To reproduce
 
 ```bash
-bash get_anthology_bib.sh
 python3 minify.py
 ```
