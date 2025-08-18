@@ -68,6 +68,6 @@ print("Writing anthology.min.bib")
 with open("anthology.min.bib", "w", encoding="utf8") as file:
     file.write(data)
     
-# print("Deleting Temp Files")    
-# os.remove("anthology.bib")
-# os.remove("anthology.bib.gz")
+print("Deleting Temp Files")    
+os.remove("anthology.bib")
+os.remove("anthology.bib.gz")
