@@ -6,21 +6,24 @@ import shutil
 import os
 
 
-print("Downloading anthology.bib.gz")
-url = "https://aclanthology.org/anthology.bib.gz"
-response = requests.get(url, stream=True)
+# Download anthology.bib.gz
+if not os.path.isfile("./anthology.bib.gz"):
+    print("Downloading anthology.bib.gz")
+    url = "https://aclanthology.org/anthology.bib.gz"
+    response = requests.get(url, stream=True)
 
+    with open("anthology.bib.gz", mode="wb") as file:
+        file.write(response.content)
 
-with open("anthology.bib.gz", mode="wb") as file:
-    file.write(response.content)
-
-print("Extracting anthology.bib")
-with gzip.open('anthology.bib.gz', 'rb') as f_in:
-    with open('anthology.bib', 'wb') as f_out:
-        shutil.copyfileobj(f_in, f_out)
+# Extracting to anthology.bib
+if not os.path.isfile("./anthology.bib"):
+    print("Extracting anthology.bib")
+    with gzip.open('anthology.bib.gz', 'rb') as f_in:
+        with open('anthology.bib', 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
 
 print("Parsing anthology.bib")
-bib_data = parse_file('anthology.bib')
+bib_data = parse_file('anthology.bib', encoding='utf8')
 
 for entry in bib_data.entries:
     if "address" in bib_data.entries[entry].fields:
@@ -48,8 +51,13 @@ data = re.sub(r'\n\s*\n', '\n', data)
 # remove spaces at the beginning of the line
 data = re.sub(r'^\s+', '', data, flags=re.MULTILINE)
 
+# Revert {\\textasciitilde a} to \~a
+data = re.sub(r'\{\\\\textasciitilde\s*([a-zA-Z])\}', r'\\~\1', data)
+# Revert all double backslashes to single backslash
+data = data.replace('\\\\', '\\')
 
 # replace all publishers with a variable
+# TODO: this may not be 100% safe, e.g., if ACL occurs in a paper title
 data = re.sub(r'publisher = "Association for Computational Linguistics",', r'publisher = ACL,', data)
 data = '@STRING(ACL = "Association for Computational Linguistics")\n' + data
 
