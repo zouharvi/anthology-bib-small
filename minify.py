@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import re
 from pybtex.database import parse_file
 import requests
